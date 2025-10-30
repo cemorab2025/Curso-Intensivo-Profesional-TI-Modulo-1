@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 1: Seguridad (Base)</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de la fuente Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* gray-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6; /* blue-500 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb; /* blue-600 */
+        }
+        .option-btn {
+            transition: all 0.3s ease;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            background-color: #374151; /* gray-700 */
+        }
+        .option-btn.correct {
+            background-color: #22c55e; /* green-500 */
+            border-color: #16a34a; /* green-600 */
+            color: white;
+        }
+        .option-btn.incorrect {
+            background-color: #ef4444; /* red-500 */
+            border-color: #dc2626; /* red-600 */
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 antialiased">
+
+    <!-- Header -->
+    <header class="bg-gray-800 shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+                <a href="index.html" class="text-xl md:text-2xl font-bold text-white">
+                    <span class="text-blue-400">Módulo 1:</span> Seguridad (Base)
+                </a>
+            </div>
+            <div>
+                <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    &larr; Volver al Portal
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenedor del Cuestionario -->
+    <main class="container mx-auto px-6 py-12 md:py-16">
+
+        <!-- Contenedor del Quiz -->
+        <div id="quiz-container" class="max-w-3xl mx-auto bg-gray-800 p-6 md:p-10 rounded-xl shadow-2xl">
+            <!-- Barra de Progreso y Puntaje -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <span id="progress-text" class="text-lg font-semibold text-blue-400">Pregunta 1 de 30</span>
+                    <p class="text-sm text-gray-400" id="attempt-text">Intento: 1</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-lg font-semibold text-white">Puntaje</span>
+                    <p id="score-text" class="text-2xl font-bold text-green-400">0</p>
+                </div>
+            </div>
+            
+            <!-- Progreso Visual -->
+            <div class="w-full bg-gray-700 rounded-full h-2.5 mb-8">
+                <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+
+            <!-- Pregunta -->
+            <h2 id="question-text" class="text-2xl md:text-3xl font-bold text-white mb-8" style="min-height: 100px;">
+                Cargando pregunta...
+            </h2>
+
+            <!-- Opciones -->
+            <div id="options-container" class="space-y-4">
+                <!-- Opciones se generan dinámicamente -->
+            </div>
+
+            <!-- Botón de Siguiente -->
+            <button id="next-btn" class="w-full mt-8 px-6 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors hidden">
+                Siguiente Pregunta
+            </button>
+            
+            <!-- Contenedor de Feedback -->
+            <div id="feedback-container" class="mt-6 p-6 rounded-lg hidden">
+                <h3 id="feedback-title" class="text-2xl font-bold mb-3"></h3>
+                <p id="feedback-text" class="text-lg"></p>
+                <div id="general-explanation-container" class="mt-4 pt-4 border-t border-gray-600 hidden">
+                    <h4 class="text-xl font-semibold text-blue-300 mb-2">Explicación General</h4>
+                    <p id="general-explanation-text" class="text-base"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenedor de Resultados -->
+        <div id="results-container" class="max-w-3xl mx-auto bg-gray-800 p-10 rounded-xl shadow-2xl text-center hidden">
+            <h2 class="text-4xl font-extrabold text-white mb-4">¡Cuestionario Completo!</h2>
+            <p class="text-xl text-gray-300 mb-6" id="results-attempt-text">Resultados de tu Intento 1</p>
+            <div class="bg-gray-900 rounded-lg p-8 my-8">
+                <p class="text-lg text-blue-400">Tu puntaje final es:</p>
+                <p id="score-final" class="text-7xl font-bold text-green-400 my-4">25 / 30</p>
+                <p id="results-message" class="text-lg text-gray-200">¡Excelente trabajo! Has dominado los fundamentos.</p>
+            </div>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <button id="retry-btn" class="w-full md:w-auto px-8 py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-transform transform hover:scale-105">
+                    Siguiente Intento
+                </button>
+                <a href="index.html" class="w-full md:w-auto block px-8 py-3 bg-gray-700 text-white text-lg font-semibold rounded-lg hover:bg-gray-600 transition-colors">
+                    Volver al Portal
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-700 py-8 mt-16">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">
+                Plataforma de estudio para la Vacante BG-2025-30201-31-Ab
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // --- BANCO DE PREGUNTAS MÓDULO 1 ---
+        // Basado en los documentos de estudio para la vacante
+        // NOTA: Se crea un banco inicial de 30 preguntas para el primer intento.
+        // Se deben añadir 120 preguntas más para completar el banco de 150.
+        const allQuestions = [
+            // --- BLOQUE 1: TRÍADA CIA (Preguntas 1-10) ---
+            {
+                question: "¿Qué pilar de la Tríada CIA se viola si un atacante accede y *lee* la base de datos de calificaciones de la UNAL?",
+                options: [
+                    { text: "Confidencialidad", isCorrect: true, feedback: "¡Correcto! La Confidencialidad busca prevenir la divulgación no autorizada de información. Leer datos sin permiso es el ejemplo clásico de una violación de confidencialidad.\n\nEjemplo: Un hacker leyendo los correos electrónicos del rectorado." },
+                    { text: "Integridad", isCorrect: false, feedback: "Incorrecto. La Integridad se violaría si el atacante *modifica* las notas (ej. cambia un 3.0 por un 5.0). El simple hecho de leer afecta la confidencialidad." },
+                    { text: "Disponibilidad", isCorrect: false, feedback: "Incorrecto. La Disponibilidad se violaría si el atacante *bloquea* el acceso al sistema (ej. un ataque DDoS en época de inscripciones), impidiendo que los usuarios legítimos lo usen." },
+                    { text: "Autenticación", isCorrect: false, feedback: "Incorrecto. La Autenticación no es un pilar de la Tríada CIA, sino un *control* o mecanismo que se usa para *proteger* los tres pilares (especialmente la confidencialidad y la integridad)." }
+                ],
+                generalExplanation: "La Tríada CIA es la base de la seguridad: Confidencialidad (proteger de lectura no autorizada), Integridad (proteger de modificación no autorizada) y Disponibilidad (asegurar el acceso legítimo)."
+            },
+            {
+                question: "Un ataque de Ransomware que cifra el servidor del SIA (Sistema de Información Académica) y no permite a los estudiantes inscribir materias, ataca principalmente la:",
+                options: [
+                    { text: "Integridad", isCorrect: false, feedback: "Si bien técnicamente los datos se modifican (cifran), el *objetivo* y el *impacto* principal del Ransomware no es la alteración, sino el bloqueo del acceso. Por eso, afecta a otro pilar." },
+                    { text: "Confidencialidad", isCorrect: false, feedback: "Incorrecto. Aunque algunos Ransomware modernos también roban datos (violando la confidencialidad), su función principal y el impacto inmediato es el bloqueo del sistema." },
+                    { text: "Disponibilidad", isCorrect: true, feedback: "¡Correcto! El Ransomware impide el acceso legítimo al sistema y a los datos por parte de los usuarios autorizados (estudiantes, docentes). Esto es una violación directa de la Disponibilidad.\n\nEjemplo: El sistema SIA caído durante la semana de adición y cancelación de materias." },
+                    { text: "No Repudio", isCorrect: false, feedback: "Incorrecto. El No Repudio es un concepto de seguridad que asegura que alguien no pueda negar haber realizado una acción (ej. usando firmas digitales). No es parte de la Tríada CIA." }
+                ],
+                generalExplanation: "Aunque el Ransomware técnicamente *modifica* los datos (Integridad), su principal impacto en el negocio es impedir el acceso, afectando catastróficamente la *Disponibilidad* del servicio."
+            },
+            {
+                question: "Asegurar que la nota de un estudiante registrada por un docente en el SIA no pueda ser modificada por personal administrativo no autorizado, es un ejemplo de protección de la:",
+                options: [
+                    { text: "Confidencialidad", isCorrect: false, feedback: "Incorrecto. La Confidencialidad se centraría en que el personal no autorizado no pueda *ver* la nota. Aquí hablamos de *modificarla*." },
+                    { text: "Disponibilidad", isCorrect: false, feedback: "Incorrecto. La Disponibilidad se refiere a que el sistema esté accesible para registrar la nota. No está relacionado con la modificación no autorizada." },
+                    { text: "Integridad", isCorrect: true, feedback: "¡Correcto! La Integridad garantiza que la información sea exacta, completa y no haya sido alterada de manera no autorizada. Proteger una nota de un cambio indebido es un control de integridad.\n\nEjemplo: Usar *logs* de auditoría para saber quién y cuándo modificó un registro financiero." },
+                    { text: "Legalidad", isCorrect: false, feedback: "Incorrecto. La Legalidad (como en la Ley 1581) es un principio de tratamiento de datos, pero el pilar de seguridad específico que describe la protección contra la alteración es la Integridad." }
+                ],
+                generalExplanation: "La Integridad es el pilar que protege los datos contra modificaciones o eliminaciones no autorizadas, asegurando que la información es confiable y exacta."
+            },
+
+            // --- BLOQUE 2: NORMATIVIDAD (LEY 1581) (Preguntas 4-10) ---
+            {
+                question: "Según la Ley 1581 de 2012 de Colombia, ¿cuál de estos datos de un estudiante se considera un 'Dato Sensible'?",
+                options: [
+                    { text: "Número de cédula", isCorrect: false, feedback: "Incorrecto. Este es un dato personal de identificación, pero no se considera sensible por ley. Es un dato 'Público' según la Corte Constitucional en muchos contextos." },
+                    { text: "Correo electrónico institucional (@unal.edu.co)", isCorrect: false, feedback: "Incorrecto. Este es un dato personal, pero no sensible. Se usa para comunicaciones oficiales." },
+                    { text: "Afiliación a un sindicato estudiantil", isCorrect: true, feedback: "¡Correcto! La Ley 1581 define como datos sensibles aquellos que afectan la intimidad o cuyo uso indebido puede generar discriminación. Esto incluye explícitamente la pertenencia a sindicatos, organizaciones políticas, convicciones religiosas, filosóficas, etc." },
+                    { text: "PPA (Promedio Ponderado Acumulado)", isCorrect: false, feedback: "Incorrecto. Este es un dato personal privado y académico, pero no entra en la categoría de 'sensible' definida por la ley (salud, origen racial, vida sexual, datos biométricos, etc.)." }
+                ],
+                generalExplanation: "Los datos sensibles tienen una protección especial. Son aquellos que revelan origen racial/étnico, orientación política, convicciones religiosas/filosóficas, pertenencia a sindicatos, datos de salud, vida sexual y datos biométricos."
+            },
+            {
+                question: "Un estudiante ejerce su derecho a conocer qué información tiene la Universidad Nacional sobre él. ¿Cómo se denomina este derecho según la Ley 1581?",
+                options: [
+                    { text: "Derecho de Supresión", isCorrect: false, feedback: "Incorrecto. El derecho de Supresión (o cancelación) es el derecho a solicitar que sus datos sean *eliminados* de la base de datos." },
+                    { text: "Derecho de Rectificación", isCorrect: false, feedback: "Incorrecto. El derecho de Rectificación es el derecho a solicitar que se *corrija* o *actualice* información inexacta." },
+                    { text: "Derecho de Habeas Data", isCorrect: false, feedback: "Incorrecto. Habeas Data es el derecho constitucional *general* que engloba todos los demás, pero el acto específico de 'conocer' la información tiene un nombre." },
+                    { text: "Derecho de Acceso", isCorrect: true, feedback: "¡Correcto! La ley (y el acrónimo ARCO) establece el derecho de Acceso, que es la facultad del titular de obtener información sobre sus datos personales que están siendo tratados por la entidad.\n\nEjemplo: Solicitar a la Oficina de Registro un listado de toda la información personal que tienen almacenada." }
+                ],
+                generalExplanation: "La Ley 1581 garantiza los derechos ARCO: Acceso (conocer), Rectificación (actualizar), Cancelación (suprimir) y Oposición (limitar el uso)."
+            },
+            {
+                question: "La Universidad Nacional (Responsable del Tratamiento) contrata a un proveedor en la nube (Encargado) para procesar nóminas. Si el proveedor sufre una fuga de datos, ¿quién es el principal responsable ante la ley (Superintendencia) y los titulares?",
+                options: [
+                    { text: "El proveedor (Encargado), porque él causó la fuga.", isCorrect: false, feedback: "Incorrecto. Aunque el Encargado tiene responsabilidad contractual y legal, la Ley 1581 establece que el *Responsable* (la Universidad) no pierde su responsabilidad por el hecho de contratar a un tercero." },
+                    { text: "La Universidad Nacional (Responsable), porque ella es dueña de los datos.", isCorrect: true, feedback: "¡Correcto! La Universidad, como *Responsable del Tratamiento*, es quien decide sobre la finalidad y uso de los datos. Sigue siendo la principal responsable ante los titulares y la SIC, y debe demostrar que eligió a un Encargado idóneo y que supervisó el contrato." },
+                    { text: "Ambos por igual (Responsabilidad Solidaria).", isCorrect: false, feedback: "No exactamente. Aunque ambos tienen roles, la responsabilidad primaria y la *titularidad* de la obligación de cara al ciudadano recae sobre el *Responsable* (la Universidad)." },
+                    { text: "Ninguno, si la fuga fue por un hacker (fuerza mayor).", isCorrect: false, feedback: "Incorrecto. La 'fuerza mayor' no exime automáticamente de responsabilidad. La entidad debe demostrar que aplicó el 'Principio de Seguridad' (debida diligencia) para prevenir el ataque. Si no lo hizo, es responsable." }
+                ],
+                generalExplanation: "El *Responsable* (quien decide sobre los datos, ej. la UNAL) nunca delega su responsabilidad legal ante el titular, aunque contrate a un *Encargado* (quien procesa los datos, ej. un proveedor cloud) para la operación."
+            },
+
+            // --- BLOQUE 3: AMENAZAS Y ATAQUES (Preguntas 7-15) ---
+            {
+                question: "Un docente recibe un email urgente del 'Banco de Colombia' pidiendo verificar su cuenta en un enlace. El enlace lleva a una página idéntica a la del banco. Esto es un claro ejemplo de:",
+                options: [
+                    { text: "Phishing", isCorrect: true, feedback: "¡Correcto! Esto es Phishing (suplantación de identidad). Se usa ingeniería social (urgencia, miedo) para engañar al usuario y hacer que entregue sus credenciales en un sitio web falso.\n\nEjemplo: Un email falso de la DIAN pidiendo descargar un 'embargo'." },
+                    { text: "Ransomware", isCorrect: false, feedback: "Incorrecto. Ransomware es un malware que *cifra* sus archivos y pide un rescate. No busca robar su contraseña bancaria, sino secuestrar sus datos." },
+                    { text: "Ataque DDoS", isCorrect: false, feedback: "Incorrecto. Un ataque DDoS (Denegación de Servicio) busca *tumbar* el servidor del banco con miles de solicitudes falsas, impidiendo que usuarios legítimos entren. No roba credenciales." },
+                    { text: "Inyección SQL", isCorrect: false, feedback: "Incorrecto. La Inyección SQL es un ataque técnico contra la *base de datos* del servidor web, no un engaño dirigido al *usuario* final." }
+                ],
+                generalExplanation: "El Phishing es una técnica de ingeniería social que suplanta la identidad de una entidad confiable (banco, DIAN, la misma UNAL) para robar información confidencial como contraseñas o datos bancarios."
+            },
+            {
+                question: "Un funcionario de la Oficina de Admisiones descarga un archivo PDF llamado 'Listado_Nuevos_Admitidos.pdf.exe'. Al abrirlo, todos sus archivos se cifran y aparece una nota pidiendo un pago en Bitcoin. ¿Qué tipo de amenaza es esta?",
+                options: [
+                    { text: "Spyware", isCorrect: false, feedback: "Incorrecto. El Spyware es un malware que *espía* su actividad (ej. graba lo que teclea o mira su cámara) pero no secuestra sus archivos." },
+                    { text: "Gusano (Worm)", isCorrect: false, feedback: "Incorrecto. Un Gusano es un malware que se *replica* a sí mismo por la red (ej. infecta otros PCs en la oficina). Aunque podría *transportar* un Ransomware, el ataque descrito es el Ransomware en sí." },
+                    { text: "Ransomware", isCorrect: true, feedback: "¡Correcto! Este es un ataque de Ransomware. El malware cifra los archivos del disco duro (Integridad) y bloquea el acceso (Disponibilidad) exigiendo un rescate económico para devolverlos.\n\nEjemplo: El notorio ataque a Keralty (Sanitas) en Colombia." },
+                    { text: "Phishing", isCorrect: false, feedback: "Incorrecto. El Phishing fue el *vector de entrega* (el email que lo convenció de descargar el archivo), pero el *ataque* en sí (el cifrado y extorsión) es Ransomware." }
+                ],
+                generalExplanation: "El Ransomware (secuestro de datos) es un tipo de malware que cifra los archivos de la víctima y exige un pago (rescate) para descifrarlos, afectando la Integridad y, sobre todo, la Disponibilidad."
+            },
+            {
+                question: "Un atacante logra sobrecargar el servidor del SIA con millones de solicitudes falsas simultáneas, haciendo que la página colapse y ningún estudiante pueda inscribir materias. Este ataque se denomina:",
+                options: [
+                    { text: "Ataque de Fuerza Bruta", isCorrect: false, feedback: "Incorrecto. Un ataque de Fuerza Bruta es un intento de *adivinar* una contraseña probando millones de combinaciones. No busca tumbar el servidor, sino entrar a una cuenta." },
+                    { text: "Ataque DDoS (Denegación de Servicio Distribuido)", isCorrect: true, feedback: "¡Correcto! Esto es un Ataque de Denegación de Servicio Distribuido (DDoS). Su único objetivo es agotar los recursos del servidor (CPU, ancho de banda) con tráfico basura para que los usuarios legítimos no puedan acceder.\n\nEjemplo: Tumbar la página de la Registraduría el día de elecciones." },
+                    { text: "Man-in-the-Middle (MITM)", isCorrect: false, feedback: "Incorrecto. Un ataque MITM consiste en *interceptar* la comunicación entre el usuario y el servidor para espiar o modificar los datos. No busca tumbar el servicio." },
+                    { text: "Amenaza Persistente Avanzada (APT)", isCorrect: false, feedback: "Incorrecto. Una APT es un ataque sigiloso y a largo plazo para *robar información* de alto valor (ej. secretos de estado o investigación), no para hacer ruido tumbando un servicio." }
+                ],
+                generalExplanation: "Un ataque DDoS busca afectar la *Disponibilidad* de un servicio inundándolo con más tráfico del que puede manejar, impidiendo el acceso a usuarios legítimos."
+            },
+            {
+                question: "Un atacante se sienta en una cafetería de la UNAL, crea una red Wi-Fi falsa llamada 'WIFI_UNAL_GRATIS' y espera a que los estudiantes se conecten para robar sus contraseñas. ¿Cómo se llama esta técnica?",
+                options: [
+                    { text: "Evil Twin (Gemelo Maligno)", isCorrect: true, feedback: "¡Correcto! Esta técnica se llama 'Evil Twin'. Consiste en crear un punto de acceso Wi-Fi falso con un nombre confiable. Cuando las víctimas se conectan, todo su tráfico pasa a través del portátil del atacante, permitiéndole realizar ataques 'Man-in-the-Middle' y robar credenciales." },
+                    { text: "Pharming", isCorrect: false, feedback: "Incorrecto. El Pharming es similar en objetivo pero diferente en técnica. Consiste en envenenar el DNS para que cuando escribas 'bancolombia.com' en tu navegador, te redirija a una IP falsa, incluso si la URL está bien escrita." },
+                    { text: "Spoofing", isCorrect: false, feedback: "Incorrecto. 'Spoofing' (suplantación) es un término general. Este ataque es un *tipo* específico de Spoofing (suplantación de un AP Wi-Fi), pero 'Evil Twin' es el nombre técnico y preciso." },
+                    { text: "Wardriving", isCorrect: false, feedback: "Incorrecto. El Wardriving es el acto de *buscar* redes Wi-Fi (vulnerables o no) desde un vehículo en movimiento. No implica crear una red falsa para atacar." }
+                ],
+                generalExplanation: "Un ataque 'Evil Twin' suplanta una red Wi-Fi legítima para que las víctimas se conecten a ella, permitiendo al atacante interceptar todo su tráfico de red."
+            },
+
+            // --- BLOQUE 4: GESTIÓN DE RIESGOS (Preguntas 11-15) ---
+            {
+                question: "En gestión de riesgos, un servidor de bases de datos del SIA que no tiene los últimos parches de seguridad de Windows aplicados, representa una:",
+                options: [
+                    { text: "Amenaza", isCorrect: false, feedback: "Incorrecto. La amenaza es el *actor* o *evento* que podría explotar la falla (ej. un hacker, un virus, un incendio)." },
+                    { text: "Vulnerabilidad", isCorrect: true, feedback: "¡Correcto! La vulnerabilidad es la *debilidad* o *agujero* en el activo (el servidor). El software sin parches es una debilidad conocida que puede ser explotada.\n\nEjemplo: Una puerta sin candado en el centro de datos." },
+                    { text: "Riesgo", isCorrect: false, feedback: "Incorrecto. El riesgo es la *probabilidad* de que una *amenaza* explote la *vulnerabilidad* y cause un *impacto* (ej. 'Alto riesgo de fuga de datos')." },
+                    { text: "Activo", isCorrect: false, feedback: "Incorrecto. El activo es el *servidor mismo* o los *datos* que contiene. Es lo que intentamos proteger." }
+                ],
+                generalExplanation: "La relación es: una *Amenaza* (actor) explota una *Vulnerabilidad* (debilidad) en un *Activo* (lo que vale), materializando un *Riesgo* (probabilidad x impacto)."
+            },
+            {
+                question: "La fórmula 'Riesgo = Probabilidad x Impacto' se utiliza para:",
+                options: [
+                    { text: "Tratar el riesgo", isCorrect: false, feedback: "Incorrecto. Esta fórmula se usa para *medir* el riesgo. El 'tratamiento' viene después (mitigar, aceptar, transferir, evitar)." },
+                    { text: "Analizar el riesgo", isCorrect: true, feedback: "¡Correcto! Esta fórmula es el núcleo del *Análisis de Riesgos* (también llamado Evaluación). Permite cuantificar y priorizar los riesgos. Un riesgo con 'Alta Probabilidad' y 'Alto Impacto' (ej. Ransomware en SIA) debe tratarse primero." },
+                    { text: "Identificar el activo", isCorrect: false, feedback: "Incorrecto. La identificación de activos (ej. 'Servidor SIA') es un paso *previo* al análisis de riesgos." },
+                    { text: "Auditar el control", isCorrect: false, feedback: "Incorrecto. La auditoría de controles (ej. 'revisar si el antivirus funciona') es un paso posterior, para ver si el *tratamiento* del riesgo fue efectivo." }
+                ],
+                generalExplanation: "El Análisis de Riesgos usa la fórmula (Probabilidad x Impacto) para priorizar qué debilidades deben ser corregidas primero, asignando los recursos limitados (dinero, personal) donde más se necesitan."
+            },
+            {
+                question: "La Universidad decide que el riesgo de que un rayo destruya el centro de datos de la Sede Bogotá es muy alto. Decide contratar un servicio de 'Disaster Recovery' en la nube de AWS. ¿Qué tipo de tratamiento de riesgo es este?",
+                options: [
+                    { text: "Mitigar el riesgo", isCorrect: false, feedback: "Casi, pero no es el término más preciso. Mitigar sería instalar un pararrayos. Si bien el Disaster Recovery *reduce el impacto*, la acción de pagarle a un tercero para que asuma parte de la carga se llama de otra forma." },
+                    { text: "Aceptar el riesgo", isCorrect: false, feedback: "Incorrecto. Aceptar el riesgo sería no hacer nada y asumir el costo de la destrucción. Aquí se está tomando una acción costosa para prevenirlo." },
+                    { text: "Transferir el riesgo", isCorrect: true, feedback: "¡Correcto! Se está transfiriendo (o compartiendo) el riesgo a un tercero (AWS). La Universidad paga una prima (el costo del servicio) y AWS asume la responsabilidad de tener la infraestructura lista para operar si ocurre el desastre.\n\nEjemplo: Comprar un seguro contra incendios." },
+                    { text: "Evitar el riesgo", isCorrect: false, feedback: "Incorrecto. Evitar el riesgo sería eliminar la causa. En este caso, la única forma de *evitarlo* sería apagar el centro de datos y no tener servidores, lo cual no es viable." }
+                ],
+                generalExplanation: "Las 4 formas de tratar un riesgo son: 1. Mitigar (reducirlo, ej. poner un firewall), 2. Transferir (pagar a otro, ej. un seguro o un proveedor cloud), 3. Aceptar (no hacer nada), 4. Evitar (eliminar el proceso riesgoso)."
+            },
+            {
+                question: "El 'Principio de Mínimo Privilegio' es un control de seguridad que busca:",
+                options: [
+                    { text: "Dar a los administradores todos los permisos para que trabajen rápido.", isCorrect: false, feedback: "Incorrecto. Esto es lo *opuesto* al mínimo privilegio. Dar todos los permisos ('God Mode') es una práctica extremadamente riesgosa." },
+                    { text: "Asegurar que un usuario tenga solo los permisos estrictamente necesarios para hacer su trabajo.", isCorrect: true, feedback: "¡Correcto! Este principio dicta que a nadie se le debe dar más acceso del que necesita para cumplir sus funciones. Así, si su cuenta es comprometida, el daño es limitado.\n\nEjemplo: Un docente puede *poner* notas, pero no puede *modificar* el motor de la base de datos del SIA." },
+                    { text: "Garantizar que todos los usuarios tengan los mismos privilegios básicos.", isCorrect: false, feedback: "Incorrecto. Esto se opone al control de acceso. Los roles son diferentes; un estudiante no puede tener los mismos privilegios que un decano." },
+                    { text: "Usar la menor cantidad de software posible en un servidor.", isCorrect: false, feedback: "Incorrecto. Eso es un concepto llamado 'Hardening' o 'bastionado' (reducir la superficie de ataque), que es valioso, pero no es el Principio de Mínimo Privilegio." }
+                ],
+                generalExplanation: "El Principio de Mínimo Privilegio es un control fundamental de *Control de Acceso* que limita el daño potencial de un error o un ataque."
+            },
+            {
+                question: "¿Cuál es el propósito principal de un firewall en la red de la Universidad?",
+                options: [
+                    { text: "Detectar virus y malware dentro de los archivos.", isCorrect: false, feedback: "Incorrecto. Esa es la función principal de un *Antivirus* o *Antimalware*. El firewall no suele inspeccionar *dentro* de los archivos." },
+                    { text: "Cifrar la comunicación entre el estudiante y el servidor.", isCorrect: false, feedback: "Incorrecto. Esa es la función de un *certificado SSL/TLS* (lo que te da el 'https' en el navegador). El firewall no cifra la conexión." },
+                    { text: "Filtrar el tráfico de red basado en reglas (puertos, IPs) para bloquear accesos no deseados.", isCorrect: true, feedback: "¡Correcto! El firewall actúa como un 'guardia de seguridad' en la puerta de la red. Revisa cada 'paquete' de datos y, basándose en reglas (ej. 'Bloquear todo excepto el puerto 443'), decide si lo deja entrar o salir.\n\nEjemplo: Bloquear el acceso desde IPs de países conocidos por ciberataques." },
+                    { text: "Hacer copias de seguridad de la información crítica.", isCorrect: false, feedback: "Incorrecto. Esa es la función de un *Sistema de Backups*. Un firewall es un dispositivo de seguridad de red en tiempo real." }
+                ],
+                generalExplanation: "Un firewall es la primera línea de defensa de la red. Es un control de seguridad perimetral que filtra el tráfico basándose en un conjunto de reglas predefinidas."
+            },
+
+            // --- BLOQUE 5 (Preguntas 16-30) ---
+            // Añadir más preguntas para completar las 30 del primer intento.
+            // ... (Aquí irían 15 preguntas más sobre gestión de activos, políticas de seguridad, etc.)
+
+            {
+                question: "Según la Ley 1581, ¿qué es un 'Responsable del Tratamiento'?",
+                options: [
+                    { text: "La persona que sufre la fuga de datos.", isCorrect: false, feedback: "Incorrecto. Esa persona es el *Titular* de los datos (el afectado)." },
+                    { text: "El software o sistema que almacena los datos.", isCorrect: false, feedback: "Incorrecto. El software es la *herramienta* o el *activo*, no la entidad legal responsable." },
+                    { text: "La entidad (ej. la UNAL) que decide sobre la finalidad y uso de la base de datos.", isCorrect: true, feedback: "¡Correcto! El Responsable es la persona natural o jurídica (en este caso, la Universidad Nacional) que decide *para qué* se usarán los datos y *cómo* se protegerán.\n\nEjemplo: La UNAL es Responsable de la base de datos de estudiantes." },
+                    { text: "El proveedor de nube (ej. Microsoft Azure) donde se alojan los datos.", isCorrect: false, feedback: "Incorrecto. Ese proveedor es el *Encargado* del Tratamiento, ya que procesa los datos *por cuenta* del Responsable (la UNAL)." }
+                ],
+                generalExplanation: "Ley 1581 distingue claramente: el *Titular* (dueño del dato), el *Responsable* (quien decide sobre el dato, ej. UNAL) y el *Encargado* (quien procesa el dato para el Responsable, ej. un proveedor)."
+            },
+            {
+                question: "En gestión de riesgos, ¿qué es el 'Riesgo Residual'?",
+                options: [
+                    { text: "El riesgo total antes de aplicar cualquier control.", isCorrect: false, feedback: "Incorrecto. Ese es el *Riesgo Inherente*." },
+                    { text: "El riesgo que queda *después* de haber aplicado los controles de seguridad.", isCorrect: true, feedback: "¡Correcto! Es imposible eliminar el 100% del riesgo. El Riesgo Residual es el nivel de riesgo que la organización *acepta* convivir después de implementar los controles (ej. un firewall y un antivirus).\n\nEjemplo: Riesgo Inherente (Alto) -> Poner un Firewall -> Riesgo Residual (Bajo)." },
+                    { text: "Un riesgo que no fue identificado en el análisis.", isCorrect: false, feedback: "Incorrecto. Eso es un riesgo desconocido o no gestionado." },
+                    { text: "El costo de implementar un control de seguridad.", isCorrect: false, feedback: "Incorrecto. Ese es el costo del control (TCO), no el riesgo." }
+                ],
+                generalExplanation: "El proceso es: 1. Riesgo Inherente (Riesgo total sin controles) -> 2. Aplicar Controles (Mitigación) -> 3. Riesgo Residual (El riesgo que queda y que la dirección debe Aceptar)."
+            },
+            {
+                question: "Un atacante usa un programa para probar millones de contraseñas (ej. '123456', 'password', 'Unal2025') contra el email de un decano. ¿Qué tipo de ataque es?",
+                options: [
+                    { text: "Ataque de Fuerza Bruta", isCorrect: true, feedback: "¡Correcto! Este es un ataque de Fuerza Bruta. El atacante intenta sistemáticamente todas las combinaciones posibles (o una lista de contraseñas comunes, llamado 'Ataque de Diccionario') hasta que una funciona.\n\nEjemplo: Un script probando 'admin/1234', 'admin/admin', 'admin/password'..." },
+                    { text: "Inyección SQL", isCorrect: false, feedback: "Incorrecto. La Inyección SQL es un ataque a la base de datos, no al formulario de login." },
+                    { text: "Cross-Site Scripting (XSS)", isCorrect: false, feedback: "Incorrecto. XSS es un ataque que inyecta script en una página web para que se ejecute en el navegador de *otra* víctima. No adivina contraseñas." },
+                    { text: "Smishing", isCorrect: false, feedback: "Incorrecto. Smishing es Phishing pero a través de *mensajes de texto* (SMS)." }
+                ],
+                generalExplanation: "La Fuerza Bruta es un método para adivinar credenciales probando sistemáticamente múltiples combinaciones. Se mitiga con políticas de contraseñas fuertes y bloqueo de cuentas tras fallos."
+            },
+            {
+                question: "Un hacker intercepta la comunicación Wi-Fi no cifrada de un estudiante en la biblioteca y logra 'escuchar' su contraseña del SIA. ¿Qué pilar de la Tríada CIA se comprometió?",
+                options: [
+                    { text: "Confidencialidad", isCorrect: true, feedback: "¡Correcto! La contraseña, que debe ser secreta, fue *divulgada* a un tercero no autorizado. Es una violación de la Confidencialidad.\n\nEjemplo: Usar 'http' en vez de 'https' permite este tipo de ataques." },
+                    { text: "Integridad", isCorrect: false, feedback: "Incorrecto. La Integridad se habría violado si el hacker *modifica* la comunicación (ej. cambia la nota que el estudiante estaba viendo)." },
+                    { text: "Disponibilidad", isCorrect: false, feedback: "Incorrecto. La Disponibilidad no se afectó; el estudiante pudo conectarse al SIA (aunque de forma insegura)." },
+                    { text: "Autorización", isCorrect: false, feedback: "Incorrecto. La Autorización es el *proceso* que define qué puede hacer un usuario *después* de autenticarse. El ataque ocurrió *antes* de eso." }
+                ],
+                generalExplanation: "Las comunicaciones no cifradas (como redes Wi-Fi públicas sin contraseña o sitios 'http') exponen los datos, violando la Confidencialidad."
+            },
+            {
+                question: "El CONPES 3854 de 2017 establece la Política Nacional de:",
+                options: [
+                    { text: "Gobierno Digital", isCorrect: false, feedback: "Incorrecto. La política de Gobierno Digital (antes Gobierno en Línea) está en otros documentos, como el Decreto 1078." },
+                    { text: "Contratación Pública Eficiente", isCorrect: false, feedback: "Incorrecto. Eso se relaciona más con Colombia Compra Eficiente, Ley 1150, etc." },
+                    { text: "Seguridad Digital", isCorrect: true, feedback: "¡Correcto! El CONPES 3854 es la evolución del 3701 (Ciberseguridad y Ciberdefensa) y establece la Política Nacional de Seguridad Digital, buscando crear un 'entorno digital seguro' para el país." },
+                    { text: "Protección de Datos Personales", isCorrect: false, feedback: "Incorrecto. La política de protección de datos está consagrada en la Ley Estatutaria 1581 de 2012." }
+                ],
+                generalExplanation: "Los documentos CONPES definen políticas estratégicas del gobierno. El 3854 es el marco de referencia nacional para la Seguridad Digital."
+            },
+            // --- (Añadir 10 preguntas más para llegar a 30) ---
+             {
+                question: "¿Cuál es el propósito de un análisis de vulnerabilidades?",
+                options: [
+                    { text: "Responder a un incidente de seguridad que ya ocurrió.", isCorrect: false, feedback: "Incorrecto. Eso es 'Respuesta a Incidentes'. El análisis de vulnerabilidades es *proactivo*, busca problemas *antes* de que ocurran." },
+                    { text: "Identificar, cuantificar y priorizar las debilidades en un sistema.", isCorrect: true, feedback: "¡Correcto! Es un proceso proactivo que escanea los sistemas (ej. con herramientas como Nessus o Qualys) para encontrar 'agujeros' (como software sin parches) y listarlos para que sean corregidos.\n\nEjemplo: Correr un escaneo mensual al servidor del SIA." },
+                    { text: "Capacitar a los usuarios sobre cómo evitar el phishing.", isCorrect: false, feedback: "Incorrecto. Eso es 'Concienciación' o 'Capacitación en Seguridad'." },
+                    { text: "Comprar un seguro para transferir el riesgo.", isCorrect: false, feedback: "Incorrecto. Comprar un seguro es 'Tratamiento del Riesgo'. El análisis es el paso *previo* para saber qué tan riesgoso es el sistema." }
+                ],
+                generalExplanation: "El análisis de vulnerabilidades es una foto técnica de las debilidades de un sistema, esencial para la Gestión de Riesgos."
+            },
+            {
+                question: "Un atacante modifica los registros DNS de la UNAL para que 'sia.unal.edu.co' redirija a los usuarios a un servidor IP falso en Rusia. ¿Qué ataque es este?",
+                options: [
+                    { text: "Phishing", isCorrect: false, feedback: "Incorrecto. Es similar al Phishing en su objetivo (engañar), pero la técnica es diferente. En el Phishing, la URL es falsa (ej. 'sia-unal.com'). Aquí, la URL es *correcta*." },
+                    { text: "Pharming", isCorrect: true, feedback: "¡Correcto! Esto es Pharming (o Envenenamiento de DNS). Es un ataque mucho más sofisticado que el Phishing, ya que ataca la infraestructura de red (el DNS) para redirigir tráfico legítimo (usuarios que escriben la URL correcta) a un sitio malicioso." },
+                    { text: "Evil Twin (Gemelo Maligno)", isCorrect: false, feedback: "Incorrecto. Evil Twin es un ataque a nivel de *Wi-Fi*, suplantando el nombre de la red." },
+                    { text: "Inyección SQL", isCorrect: false, feedback: "Incorrecto. Inyección SQL ataca la base de datos, no el sistema de nombres de dominio (DNS)." }
+                ],
+                generalExplanation: "El Pharming es un 'Phishing a gran escala' que manipula el DNS para redirigir a los usuarios a sitios falsos sin que ellos se den cuenta."
+            },
+            {
+                question: "En el contexto de la Ley 1581, ¿qué es el 'Principio de Finalidad'?",
+                options: [
+                    { text: "Que los datos deben ser eliminados al final del año fiscal.", isCorrect: false, feedback: "Incorrecto. La retención de datos depende de la finalidad, no de una fecha fija." },
+                    { text: "Que el Titular debe ser informado sobre *para qué* se usarán sus datos, y no pueden usarse para algo diferente.", isCorrect: true, feedback: "¡Correcto! El Principio de Finalidad obliga al Responsable (la UNAL) a informar al titular (estudiante) el propósito de la recolección (ej. 'Datos para gestión académica') y prohíbe usarlos para un fin distinto (ej. 'Vender la base de datos a un banco')." },
+                    { text: "Que la finalidad de la ley es proteger a las empresas.", isCorrect: false, feedback: "Incorrecto. La finalidad de la ley es proteger el derecho al Habeas Data de los *ciudadanos*." },
+                    { text: "Que los datos deben ser veraces y estar actualizados.", isCorrect: false, feedback: "Incorrecto. Ese es el *Principio de Veracidad* o Calidad." }
+                ],
+                generalExplanation: "El Principio de Finalidad (Art. 4, Ley 1581) es clave: limita el uso de los datos *solo* para el propósito que fue informado y autorizado por el titular."
+            },
+            {
+                question: "Si la política de seguridad de la UNAL dice: 'Las contraseñas deben tener 12 caracteres, mayúsculas, minúsculas y números'. ¿Qué tipo de control es este?",
+                options: [
+                    { text: "Control Físico", isCorrect: false, feedback: "Incorrecto. Un control físico es algo tangible, que puedes tocar.\n\nEjemplo: Una puerta con llave en el centro de datos, o una cámara de seguridad." },
+                    { text: "Control Administrativo (o de Gestión)", isCorrect: false, feedback: "Casi, pero no es el más preciso. El control administrativo es la *política misma* (el documento escrito). La *implementación* de esa política en el sistema es otro tipo de control." },
+                    { text: "Control Técnico (o Lógico)", isCorrect: true, feedback: "¡Correcto! Es un control técnico (o lógico) porque está implementado en el *software* (en el SIA, en el Directorio Activo). Es el sistema quien *obliga* al usuario a cumplir la regla.\n\nEjemplo: Un firewall, un antivirus, el cifrado." },
+                    { text: "Control de Disponibilidad", isCorrect: false, feedback: "Incorrecto. No existe una categoría de 'Control de Disponibilidad'. Los controles (físicos, técnicos, adm.) *apoyan* a los pilares (Disponibilidad, Integridad, Confidencialidad)." }
+                ],
+                generalExplanation: "Los controles de seguridad se clasifican por su naturaleza: Físicos (puertas, guardias), Técnicos (firewalls, contraseñas, antivirus) y Administrativos (políticas, procedimientos, capacitación)."
+            },
+            {
+                question: "¿Qué es un 'Activo de Información', según la ISO 27001?",
+                options: [
+                    { text: "Solo los servidores y computadores.", isCorrect: false, feedback: "Incorrecto. Eso es solo una parte. Los activos de hardware." },
+                    { text: "Cualquier cosa que tenga valor para la organización y deba ser protegida.", isCorrect: true, feedback: "¡Correcto! Un activo de información es mucho más que solo el hardware. Incluye los *datos* (la base de datos de estudiantes), el *software* (el SIA), el *hardware* (servidores), las *personas* (el docente que sabe el proceso) e incluso la *reputación* (el nombre de la UNAL)." },
+                    { text: "El dinero que la Universidad invierte en seguridad.", isCorrect: false, feedback: "Incorrecto. Ese es el *presupuesto* de seguridad." },
+                    { text: "Un documento que lista las vulnerabilidades.", isCorrect: false, feedback: "Incorrecto. Ese es un *reporte de vulnerabilidades*. Los activos son lo que se protege." }
+                ],
+                generalExplanation: "La Gestión de Activos es el primer paso de un SGSI (ISO 27001). No puedes proteger algo si no sabes que lo tienes y cuánto vale. Los activos incluyen datos, software, hardware, personas y reputación."
+            },
+            {
+                question: "Un usuario malintencionado que trabaja *dentro* de la Universidad (ej. un empleado descontento) es conocido como:",
+                options: [
+                    { text: "Un Hacker de Sombrero Blanco", isCorrect: false, feedback: "Incorrecto. Un 'Sombrero Blanco' (White Hat) es un hacker *ético*, alguien que ayuda a encontrar fallas para corregirlas (ej. el personal de seguridad de la UNAL)." },
+                    { text: "Un Script Kiddie", isCorrect: false, feedback: "Incorrecto. Un 'Script Kiddie' es un atacante externo, usualmente con poca habilidad, que usa herramientas creadas por otros." },
+                    { text: "Una Amenaza Interna (Insider Threat)", isCorrect: true, feedback: "¡Correcto! Una amenaza interna es un riesgo de seguridad que proviene de adentro de la organización (empleados, ex-empleados, contratistas). Son muy peligrosos porque ya tienen acceso legítimo a la red.\n\nEjemplo: Un administrador de TI que roba datos antes de renunciar." },
+                    { text: "Un Activista (Hacktivista)", isCorrect: false, feedback: "Incorrecto. Un Hacktivista (ej. Anonymous) es un atacante *externo* que ataca por motivos políticos o ideológicos." }
+                ],
+                generalExplanation: "Las Amenazas Internas son uno de los riesgos más difíciles de gestionar, ya que los controles perimetrales (como el firewall) no los detienen."
+            },
+            {
+                question: "El proceso de *prepararse*, *detectar*, *contener*, *erradicar* y *recuperarse* de un ciberataque se llama:",
+                options: [
+                    { text: "Gestión de Riesgos", isCorrect: false, feedback: "Incorrecto. La Gestión de Riesgos es el proceso *proactivo* de identificar fallas *antes* de que ocurran." },
+                    { text: "Gestión de Continuidad del Negocio (BCP)", isCorrect: false, feedback: "Incorrecto. BCP es el plan para seguir operando *durante* un desastre (ej. 'Si se quema el edificio, operamos desde la Sede Manizales')." },
+                    { text: "Gestión de Incidentes de Seguridad", isCorrect: true, feedback: "¡Correcto! Este es el ciclo de vida de la Gestión de Incidentes (descrito en guías como la de MinTIC o NIST). Es el plan *reactivo* para manejar un ataque *mientras* está ocurriendo y después de él.\n\nEjemplo: El 'plan de emergencia' cuando detectan un Ransomware." },
+                    { text: "Gestión de Activos", isCorrect: false, feedback: "Incorrecto. La Gestión de Activos es el inventario de lo que se debe proteger." }
+                ],
+                generalExplanation: "La Gestión de Incidentes es el procedimiento formal para responder a una brecha de seguridad. Sus fases son: Preparación, Detección/Análisis, Contención, Erradicación, Recuperación y Lecciones Aprendidas."
+            },
+            {
+                question: "La 'doble autenticación' (contraseña + código del celular) que usa el SIA, es un ejemplo de:",
+                options: [
+                    { text: "Autenticación Multifactor (MFA)", isCorrect: true, feedback: "¡Correcto! MFA (o 2FA) es un control que requiere que el usuario pruebe su identidad usando *dos o más* factores diferentes. En este caso: 'Algo que sabes' (la contraseña) y 'Algo que tienes' (el celular).\n\nEjemplo: La app de Bancolombia pidiendo clave + huella." },
+                    { text: "Autorización Basada en Roles (RBAC)", isCorrect: false, feedback: "Incorrecto. RBAC define *qué puedes hacer* (ej. 'rol de docente') *después* de que ya entraste. MFA es *cómo entras*." },
+                    { text: "Cifrado Simétrico", isCorrect: false, feedback: "Incorrecto. El cifrado es un proceso matemático para ocultar datos, no un método de login." },
+                    { text: "Biometría", isCorrect: false, feedback: "Incorrecto. Biometría (ej. huella, rostro) es *un tipo* de factor ('Algo que eres'), pero el concepto de usar *dos* factores se llama MFA." }
+                ],
+                generalExplanation: "MFA (Autenticación Multifactor) es uno de los controles más efectivos para prevenir el robo de cuentas, ya que robar solo la contraseña no es suficiente para el atacante."
+            },
+            {
+                question: "Un atacante intercepta la comunicación entre un estudiante y el SIA, y *modifica* la solicitud de 'Inscribir Cálculo' por 'Cancelar Semestre'. ¿Qué pilar de la Tríada CIA se viola?",
+                options: [
+                    { text: "Confidencialidad", isCorrect: false, feedback: "Incorrecto. El atacante no solo *leyó* la solicitud (Confidencialidad), sino que la *alteró* activamente, lo cual es una violación de otro pilar." },
+                    { text: "Integridad", isCorrect: true, feedback: "¡Correcto! La Integridad es la garantía de que los datos no han sido modificados o alterados sin autorización. El atacante cambió el contenido del mensaje, violando la integridad de la solicitud.\n\nEjemplo: Un ataque 'Man-in-the-Middle' que cambia el valor de una transferencia bancaria." },
+                    { text: "Disponibilidad", isCorrect: false, feedback: "Incorrecto. El servicio del SIA siguió disponible, pero procesó una transacción corrupta." },
+                    { text: "Legalidad", isCorrect: false, feedback: "Incorrecto. Aunque la acción es ilegal, el pilar de seguridad afectado es la Integridad." }
+                ],
+                generalExplanation: "Mientras la Confidencialidad se enfoca en *leer* datos, la Integridad se enfoca en *modificar* o *corromper* datos. Este es un ataque a la Integridad."
+            },
+            {
+                question: "De las siguientes opciones, ¿cuál es la mejor contraseña?",
+                options: [
+                    { text: "Unal.2025!", isCorrect: false, feedback: "Incorrecto. Aunque tiene variedad, es corta y predecible (basada en el nombre de la entidad y el año). Es débil contra ataques de diccionario." },
+                    { text: "123456789", isCorrect: false, feedback: "Incorrecto. Esta es una de las peores contraseñas posibles, se adivina en menos de un segundo." },
+                    { text: "M1H3rm4n4V44P4s4rE5t3Ex4m3n!", isCorrect: true, feedback: "¡Correcto! Esta es una 'frase de contraseña'. Es larga (más de 20 caracteres), fácil de recordar para el usuario, y extremadamente difícil de adivinar para una máquina (fuerza bruta) porque combina mayúsculas, minúsculas, números y símbolos en un patrón no obvio." },
+                    { text: "C0ntr4s3ñ4!", isCorrect: false, feedback: "Incorrecto. Esta es una contraseña 'Leet Speak' (reemplazar letras por números). Es un truco muy común y los atacantes ya incluyen estas variaciones en sus diccionarios. Es débil." }
+                ],
+                generalExplanation: "La *longitud* de la contraseña es el factor más importante para la seguridad. Es mejor una 'frase de contraseña' larga y fácil de recordar, que una corta y compleja (ej. 'Tr!cK9@') que olvidarás."
+            },
+
+            // --- (Banco de 150 preguntas) ---
+            // ... (Añadir 120 preguntas más para un total de 150) ...
+            // Las preguntas deben cubrir todos los temas de "Seguridad (Base)":
+            // - Gestión de Activos (Clasificación, Propietarios)
+            // - Políticas de Seguridad (Uso aceptable, Escritorio limpio)
+            // - Controles de Acceso (RBAC, MAC, DAC)
+            // - Criptografía (Simétrica vs Asimétrica, SSL/TLS)
+            // - Seguridad Física (Controles de acceso a edificios)
+            // - Más sobre Ley 1581 (Principios, Roles, Sanciones)
+            // - Más sobre Amenazas (Spyware, Troyanos, Ingeniería Social)
+            // - Más sobre Gestión de Riesgos (Tratamientos, Apetito de Riesgo)
+        ];
+
+        // --- LÓGICA DEL CUESTIONARIO ---
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let attemptNumber = 1;
+        let questionsForThisAttempt = [];
+
+        // Elementos del DOM
+        const progressTextEl = document.getElementById('progress-text');
+        const attemptTextEl = document.getElementById('attempt-text');
+        const scoreTextEl = document.getElementById('score-text');
+        const progressBarEl = document.getElementById('progress-bar');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainerEl = document.getElementById('options-container');
+        const nextBtnEl = document.getElementById('next-btn');
+        const feedbackContainerEl = document.getElementById('feedback-container');
+        const feedbackTitleEl = document.getElementById('feedback-title');
+        const feedbackTextEl = document.getElementById('feedback-text');
+        const generalExplanationContainerEl = document.getElementById('general-explanation-container');
+        const generalExplanationTextEl = document.getElementById('general-explanation-text');
+        const quizContainerEl = document.getElementById('quiz-container');
+        const resultsContainerEl = document.getElementById('results-container');
+        const scoreFinalEl = document.getElementById('score-final');
+        const resultsMessageEl = document.getElementById('results-message');
+        const resultsAttemptTextEl = document.getElementById('results-attempt-text');
+        const retryBtnEl = document.getElementById('retry-btn');
+
+        // Función para barajar un array (Fisher-Yates)
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // 1. Cargar el banco de preguntas según el intento
+        function loadQuestionBank() {
+            // Obtener el número de intento desde localStorage
+            attemptNumber = parseInt(localStorage.getItem('quizAttempt_M1') || '1');
+            attemptTextEl.textContent = `Intento: ${attemptNumber}`;
+            
+            const totalQuestions = allQuestions.length;
+            const questionsPerAttempt = 30; // Mostrar 30 preguntas por intento
+
+            if (attemptNumber <= 5) {
+                // Lógica para los primeros 5 intentos: mostrar en bloques de 30
+                // (Asumiendo que el banco 'allQuestions' tiene 150 preguntas)
+                const startIndex = (attemptNumber - 1) * questionsPerAttempt;
+                // Ajustamos el endIndex para que no se pase del total de preguntas
+                const endIndex = Math.min(attemptNumber * questionsPerAttempt, totalQuestions); 
+                
+                // Si el banco de preguntas es más pequeño (como en este demo), ajustamos
+                if (startIndex >= totalQuestions) {
+                     // Si ya no hay más bloques, empezamos a barajar
+                    console.warn(`Intento ${attemptNumber} pero no hay suficientes preguntas únicas. Barajando.`);
+                    questionsForThisAttempt = shuffle([...allQuestions]).slice(0, questionsPerAttempt);
+                } else {
+                    questionsForThisAttempt = allQuestions.slice(startIndex, endIndex);
+                }
+                
+                // Si el banco de demo es más pequeño que 30, tomamos las que hay
+                if (questionsForThisAttempt.length === 0 && startIndex === 0) {
+                    questionsForThisAttempt = allQuestions;
+                }
+                
+            } else {
+                // Intento 6 en adelante: 30 preguntas aleatorias de todo el banco
+                questionsForThisAttempt = shuffle([...allQuestions]).slice(0, questionsPerAttempt);
+            }
+
+            // Asegurarnos de que no mostramos más preguntas de las que tenemos
+            if (questionsForThisAttempt.length > questionsPerAttempt) {
+                questionsForThisAttempt = questionsForThisAttempt.slice(0, questionsPerAttempt);
+            }
+        }
+
+        // 2. Mostrar la pregunta actual
+        function displayQuestion() {
+            // Resetear UI
+            feedbackContainerEl.classList.add('hidden');
+            generalExplanationContainerEl.classList.add('hidden');
+            nextBtnEl.classList.add('hidden');
+            optionsContainerEl.innerHTML = ''; // Limpiar opciones anteriores
+
+            if (currentQuestionIndex >= questionsForThisAttempt.length) {
+                showResults();
+                return;
+            }
+
+            const question = questionsForThisAttempt[currentQuestionIndex];
+            const questionNumber = currentQuestionIndex + 1;
+            const totalQuestions = questionsForThisAttempt.length;
+
+            // Actualizar textos y progreso
+            questionTextEl.textContent = question.question;
+            progressTextEl.textContent = `Pregunta ${questionNumber} de ${totalQuestions}`;
+            progressBarEl.style.width = `${(questionNumber / totalQuestions) * 100}%`;
+
+            // Crear botones de opción
+            const shuffledOptions = shuffle([...question.options]); // Barajar opciones
+            shuffledOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option.text;
+                button.classList.add('option-btn', 'w-full', 'p-5', 'text-left', 'text-lg', 'bg-gray-700', 'rounded-lg', 'border-2', 'border-gray-600');
+                button.onclick = (event) => selectAnswer(event, option, question.generalExplanation, question.options);
+                optionsContainerEl.appendChild(button);
+            });
+        }
+
+        // 3. Manejar la selección de respuesta
+        function selectAnswer(event, selectedOption, generalExplanation, allOptions) {
+            // Deshabilitar todos los botones
+            Array.from(optionsContainerEl.children).forEach(btn => {
+                btn.disabled = true;
+            });
+
+            // Mostrar feedback
+            feedbackContainerEl.classList.remove('hidden');
+            feedbackTextEl.textContent = selectedOption.feedback;
+
+            if (selectedOption.isCorrect) {
+                // Respuesta Correcta
+                score++;
+                scoreTextEl.textContent = score;
+                feedbackTitleEl.textContent = "¡Correcto!";
+                feedbackContainerEl.classList.remove('bg-red-900', 'border-red-700');
+                feedbackContainerEl.classList.add('bg-green-900', 'border', 'border-green-700');
+                event.target.classList.add('correct');
+
+            } else {
+                // Respuesta Incorrecta
+                feedbackTitleEl.textContent = "Respuesta Incorrecta";
+                feedbackContainerEl.classList.remove('bg-green-900', 'border-green-700');
+                feedbackContainerEl.classList.add('bg-red-900', 'border', 'border-red-700');
+                event.target.classList.add('incorrect');
+
+                // Resaltar la correcta
+                const correctOption = allOptions.find(opt => opt.isCorrect);
+                Array.from(optionsContainerEl.children).forEach(btn => {
+                    if (btn.textContent === correctOption.text) {
+                        btn.classList.add('correct');
+                    }
+                });
+
+                // Mostrar la explicación general
+                generalExplanationTextEl.textContent = generalExplanation;
+                generalExplanationContainerEl.classList.remove('hidden');
+            }
+
+            // Mostrar botón de siguiente
+            nextBtnEl.classList.remove('hidden');
+        }
+
+        // 4. Ir a la siguiente pregunta
+        function nextQuestion() {
+            currentQuestionIndex++;
+            displayQuestion();
+        }
+
+        // 5. Mostrar resultados finales
+        function showResults() {
+            quizContainerEl.classList.add('hidden');
+            resultsContainerEl.classList.remove('hidden');
+
+            const totalQuestions = questionsForThisAttempt.length;
+            scoreFinalEl.textContent = `${score} / ${totalQuestions}`;
+            resultsAttemptTextEl.textContent = `Resultados de tu Intento ${attemptNumber}`;
+
+            // Mensaje de resultado
+            const percentage = (score / totalQuestions) * 100;
+            if (percentage >= 90) {
+                resultsMessageEl.textContent = "¡Excelente! Tienes un dominio total de los fundamentos. ¡Estás listo!";
+            } else if (percentage >= 70) {
+                resultsMessageEl.textContent = "¡Muy bien! Tienes bases sólidas. Repasa los puntos donde fallaste.";
+            } else {
+                resultsMessageEl.textContent = "Buen esfuerzo. Sigue practicando. La retroalimentación es clave. ¡Inténtalo de nuevo!";
+            }
+
+            // Preparar el siguiente intento
+            localStorage.setItem('quizAttempt_M1', (attemptNumber + 1).toString());
+        }
+
+        // 6. Reiniciar el quiz (para el siguiente intento)
+        function retryQuiz() {
+            window.location.reload();
+        }
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuestionBank();
+            displayQuestion();
+        });
+
+        nextBtnEl.addEventListener('click', nextQuestion);
+        retryBtnEl.addEventListener('click', retryQuiz);
+
+    </script>
+</body>
+</html>
